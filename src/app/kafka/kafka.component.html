@@ -1,0 +1,15 @@
+<h2 class="center">{{ title }}</h2>
+<h3 class="center"></h3>
+<div class="d-flex justify-content-center" *ngIf="showSystemBtn">
+  <button type="button" class="btn btn-success btn-lg btn-block" (click)="onClick()">
+    {{ system }}
+  </button>
+</div>
+<div class="d-flex justify-content-center" *ngIf="!showSystemBtn">
+  <button class="center {{ setColor(part) }}"  *ngFor="let part of kafkaPart" >
+    <p>{{ part }}</p>
+    <p>{{ showResponse(part) }}</p>
+  </button>
+</div>
+<button type="button" class="btn btn-secondary btn-sm btn-block" *ngIf="!showSystemBtn" (click)="onClick()" >Back</button>
+

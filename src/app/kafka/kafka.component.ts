@@ -15,33 +15,37 @@ export class KafkaComponent implements OnInit {
   statusDanger = 'btn btn-danger';
   showSystemBtn = true;
   systemBtnState = true;
-  data;
-  response: string[] = [];
+  response;
+
   constructor(data: AgentService) {
-    this.data = data;
+    this.response = JSON.parse(data.getStatus(this.kafkaPart));
+    this.checkSystem();
   }
 
-  showResponse(part: string){
-    this.response = JSON.parse(this.data.getStatus(part));
-    return this.response;
+  showResponse(part: any){
+    return `${part.status} ${part.data}` ;
   }
 
-  setColor(part: string) {
-    this.systemBtnState = true;
-    this.showResponse(part);
-    if(this.response[0] === 'Ok'){
-      return this.statusOk
-    } else {
-      this.systemBtnState = false;
-      return this.statusDanger
+  setColor(part: any) {
+    if(part.status === 'Ok'){
+        return this.statusOk
+      } else {
+        this.systemBtnState = false;
+        return this.statusDanger
+    }
+  }
+
+  checkSystem(){
+    for (let i= 0; i < this.response.length; i++){
+      if(this.response[i].status === 'Error')
+        this.systemBtnState = false;
     }
   }
 
   onClick() {
     this.showSystemBtn = !this.showSystemBtn
   }
-
-
+  
   ngOnInit(): void {
   }
 

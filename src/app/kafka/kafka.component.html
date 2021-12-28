@@ -1,16 +1,34 @@
 <h2 class="center">{{ title }}</h2>
-<div class="d-flex justify-content-center" *ngIf="showSystemBtn">
-  <button type="button" class="btn btn-lg btn-block"
-          [class.btn-success]="systemBtnState"
-          [class.btn-danger]="!systemBtnState"
-          (click)="onClick()">
-    {{ system }}
-  </button>
-</div>
-<div class="d-flex justify-content-center" *ngIf="!showSystemBtn">
-  <button class="center {{ setColor(part) }}"  *ngFor="let part of response" >
-    <p>{{ part.service }}</p>
-    <p>{{ showResponse(part) }}</p>
-  </button><br/>
-  <button type="button" class="btn btn-secondary btn-sm btn-block" (click)="onClick()" >Back</button>
-</div>
+<div *ngIf="showSystemBtn == true; then kafkaSystem else backBtn"></div>
+
+<ng-template #kafkaSystem>
+  <div class="d-flex justify-content-center">
+    <button type="button" class="btn btn-lg btn-block"
+            [class.btn-success]="systemBtnState"
+            [class.btn-danger]="!systemBtnState"
+            (click)="onClick()">
+      {{ system }}
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #backBtn>
+  <app-kafka-system
+    *ngFor="let kafkaPart of systems.names"
+    [system-name]="kafkaPart"
+    [state] = "systems.states[systems.names.indexOf(kafkaPart)]"></app-kafka-system>
+  <div class="d-flex justify-content-center">
+    <button type="button" class="btn btn-secondary btn-lg btn-block" (click)="onClick()">Back</button>
+  </div>
+</ng-template>
+
+<ng-container>
+  <div class="d-flex justify-content-center">
+    <button id="good" type="button" class="btn btn-secondary btn-sm btn-block" (click)="switchStream(true)">Good Stream</button>
+    <button id="bad" type="button" class="btn btn-secondary btn-sm btn-block" (click)="switchStream(false)">Bad Stream</button>
+    <button id="stop-stream" type="button" class="btn btn-secondary btn-sm btn-block" (click)="stopStream()">Stop Stream</button>
+  </div>
+</ng-container>
+
+
+

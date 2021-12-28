@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {AgentService} from "../agent.service";
+import {Observable} from "rxjs";
+import {ISystems} from "../isystems";
 
 @Component({
   selector: 'app-kafka',
@@ -8,44 +10,57 @@ import {AgentService} from "../agent.service";
 })
 
 export class KafkaComponent implements OnInit {
-  kafkaPart = ['funcore', 'producer','kafkaServer','consumer','DWH'];
   system = 'Kafka';
   title = 'Service Status:';
-  statusOk = 'btn btn-success';
-  statusDanger = 'btn btn-danger';
   showSystemBtn = true;
   systemBtnState = true;
-  response;
+  private readonly goodStream$: Observable<any>;
+  private readonly badStream$: Observable<any>;
+  private subscription: any;
+  systems: ISystems = {
+    names: [],
+    states: []
+  };
 
-  constructor(data: AgentService) {
-    this.response = JSON.parse(data.getStatus(this.kafkaPart));
-    this.checkSystem();
+  constructor(agent: AgentService) {
+    this.goodStream$ = agent.goodStream$;
+    this.badStream$ = agent.badStream$;
+    this.init(this.goodStream$);
   }
-
-  showResponse(part: any){
-    return `${part.status} ${part.data}` ;
-  }
-
-  setColor(part: any) {
-    if(part.status === 'Ok'){
-        return this.statusOk
-      } else {
-        this.systemBtnState = false;
-        return this.statusDanger
-    }
-  }
-
-  checkSystem(){
-    for (let i= 0; i < this.response.length; i++){
-      if(this.response[i].status === 'Error')
-        this.systemBtnState = false;
-    }
+  init(stream: Observable<any>){
+    this.subscription = stream.subscribe({
+      next: value => {
+        if(!this.systems.names.includes(value.system)){
+          this.systems.names.push(value.system);
+        }
+        for(let i = 0; i < this.systems.names.length; i++){
+          this.systems.states[i] = value.status;
+        }
+        console.log(value);
+        console.log(this.systems)
+      },
+      complete: () => console.log("Stream terminated!")
+    })
   }
 
   onClick() {
     this.showSystemBtn = !this.showSystemBtn
   }
-  
+
+  switchStream(state: boolean) {
+    if(state){
+      this.subscription.unsubscribe();
+      this.init(this.goodStream$);
+    } else {
+      this.subscription.unsubscribe();
+      this.init(this.badStream$);
+    }
+  }
+
+  stopStream() {
+    this.subscription.complete();
+  }
+
   ngOnInit(): void {
   }
 

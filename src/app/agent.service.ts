@@ -1,26 +1,57 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {from, fromEvent, interval, Observable, of, timer} from "rxjs";
+import {map, mapTo, startWith, switchMap, tap} from "rxjs/operators";
+import {IResponse} from "./iresponse";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AgentService {
-  getStatus(service: string[]) {
-    const response = [];
-    for (let i = 0; i < service.length; i++) {
-      if(service[i] === 'funcore' || service[i] === 'DWH'){
-        response.push({
-          service: service[i],
-          status: 'Ok',
-          data: 'Service is available'
+  private kafkaPart: string[] = ['funcore', 'producer', 'kafkaServer', 'consumer', 'DWH'];
+  public goodStream$;
+  public badStream$;
+
+  constructor() {
+    this.goodStream$ = this.createStream();
+    this.badStream$ = this.createBadStream();
+  }
+
+  createStream(): Observable<any> {
+    const interval$: Observable<any> = interval(1000);
+
+    return interval$
+      .pipe(
+        switchMap(() => {
+          return from(this.kafkaPart).pipe(
+            // tap(value => console.log(value)),
+            map(value => {
+              return {
+                system: value,
+                status: 'Ok',
+                data: 'System online and kicking'
+              }
+            })
+          )
         })
-      } else {
-        response.push({
-          service: service[i],
-          status: 'Error',
-          data: 'Service is not available'
+      )
+  }
+  createBadStream(): Observable<any> {
+    const interval$: Observable<any> = interval(1000);
+
+    return interval$
+      .pipe(
+        switchMap(() => {
+          return from(this.kafkaPart).pipe(
+            // tap(value => console.log(value)),
+            map(value => {
+              return {
+                system: value,
+                status: 'Error',
+                data: 'System offline and dead'
+              }
+            })
+          )
         })
-      }
-    }
-    return JSON.stringify(response)
+      )
   }
 }

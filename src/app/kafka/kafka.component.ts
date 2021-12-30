@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {AgentService} from "../agent.service";
 import {Observable} from "rxjs";
-import {ISystems} from "../isystems";
 
 @Component({
   selector: 'app-kafka',
@@ -12,32 +11,37 @@ import {ISystems} from "../isystems";
 export class KafkaComponent implements OnInit {
   system = 'Kafka';
   title = 'Service Status:';
+
   showSystemBtn = true;
-  systemBtnState = true;
-  private readonly goodStream$: Observable<any>;
-  private readonly badStream$: Observable<any>;
+
+  public readonly goodStream$: Observable<any>;
+  public readonly badStream$: Observable<any>;
+  public readonly mixedStream$: Observable<any>;
+
   private subscription: any;
-  systems: ISystems = {
-    names: [],
-    states: []
-  };
+
+  systems: {name: any, state: any}[] = [];
 
   constructor(agent: AgentService) {
     this.goodStream$ = agent.goodStream$;
     this.badStream$ = agent.badStream$;
+    this.mixedStream$ = agent.mixedStream$;
     this.init(this.goodStream$);
   }
   init(stream: Observable<any>){
     this.subscription = stream.subscribe({
       next: value => {
-        if(!this.systems.names.includes(value.system)){
-          this.systems.names.push(value.system);
-        }
-        for(let i = 0; i < this.systems.names.length; i++){
-          this.systems.states[i] = value.status;
-        }
-        console.log(value);
-        console.log(this.systems)
+        const id = this.systems.findIndex(obj => obj.name === value.system);
+          if(id < 0){
+            this.systems.push({
+              name: value.system,
+              state: value.status
+            });
+          } else {
+            if(this.systems[id].state !== value.status){
+              this.systems[id].state = value.status
+            }
+          }
       },
       complete: () => console.log("Stream terminated!")
     })
@@ -47,18 +51,23 @@ export class KafkaComponent implements OnInit {
     this.showSystemBtn = !this.showSystemBtn
   }
 
-  switchStream(state: boolean) {
-    if(state){
+  switchStream(stream: Observable<any>) {
       this.subscription.unsubscribe();
-      this.init(this.goodStream$);
-    } else {
-      this.subscription.unsubscribe();
-      this.init(this.badStream$);
-    }
+      this.init(stream);
   }
 
   stopStream() {
     this.subscription.complete();
+  }
+
+  systemStatusCheck(): boolean {
+
+    for (const system of this.systems) {
+      if(system.state.includes('Error')) {
+        return false;
+      }
+    }
+    return true;
   }
 
   ngOnInit(): void {

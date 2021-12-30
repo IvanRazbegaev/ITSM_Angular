@@ -7,6 +7,9 @@ import { KafkaComponent } from './kafka/kafka.component';
 import { KafkaSystemComponent } from './kafka-system/kafka-system.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatExpansionModule} from "@angular/material/expansion";
+import {TrackerComponent} from "./incidents-tracker/tracker/tracker.component";
+import {IncidentsTrackerModule} from "./incidents-tracker/incidents-tracker.module";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
 
 @NgModule({
   declarations: [
@@ -17,7 +20,9 @@ import {MatExpansionModule} from "@angular/material/expansion";
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    IncidentsTrackerModule,
+    MatButtonToggleModule
   ],
   providers: [
     AgentService

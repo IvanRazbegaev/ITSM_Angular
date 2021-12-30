@@ -1,4 +1,9 @@
 <header>
-  Main Page
+<mat-button-toggle-group>
+  <mat-button-toggle (click)="pageState = 'dashboard'">Dashboard</mat-button-toggle>
+  <mat-button-toggle (click)="pageState = 'tracker'">Incident Tracker</mat-button-toggle>
+</mat-button-toggle-group>
 </header>
-<app-kafka></app-kafka>
+<app-kafka *ngIf="pageState === 'dashboard'"></app-kafka>
+<app-tracker *ngIf="pageState === 'tracker'"></app-tracker>
+

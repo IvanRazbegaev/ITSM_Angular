@@ -1,14 +1,14 @@
 <ng-container>
   <mat-expansion-panel
-    [class.ok]="state === 'Ok' ? true : false"
-    [class.error]="state === 'Error' ? true : false">
+    [class.ok]="state === 'Ok'"
+    [class.error]="state === 'Error'">
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{ system.substr(0,1).toUpperCase() + system.substr(1) }}
       </mat-panel-title>
       <mat-panel-description>
+        {{ state }}
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <p>{{ state }}</p>
   </mat-expansion-panel>
 </ng-container>

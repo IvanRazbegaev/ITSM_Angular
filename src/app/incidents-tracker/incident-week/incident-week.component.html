@@ -1,0 +1,11 @@
+<ng-container>
+  <mat-expansion-panel
+    [class.active-week]="currentWeek === week"
+    [class.inactive-week]="currentWeek !== week">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Week: {{week}}
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+</ng-container>

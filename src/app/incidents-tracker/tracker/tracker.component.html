@@ -2,9 +2,12 @@
   <mat-expansion-panel>
     <mat-expansion-panel-header>
       <mat-panel-title>
-        Issues for year 2022
+        Issues for year {{ currentYear }}, current incident week: <a href="#">{{currentWeek}}</a>
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Harum, laboriosam?</p>
+    <app-incident-week class="inactive-week"
+      *ngFor="let week of weekArray"
+      [week]="week"
+    ></app-incident-week>
   </mat-expansion-panel>
 </ng-container>

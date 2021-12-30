@@ -1,3 +1,14 @@
+.header {
+  padding: 10px 0px;
+  text-align: center;
+  background: #6C9BCF;
+}
+
 mat-button-toggle-group {
-  margin-left: 12px;
+  width: 100%;
+}
+
+mat-button-toggle{
+  width: 100%;
+  background: #6C9BCF;
 }

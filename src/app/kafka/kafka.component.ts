@@ -29,6 +29,7 @@ export class KafkaComponent implements OnInit {
     this.init(this.goodStream$);
   }
   init(stream: Observable<any>){
+    this.system = 'Kafka'
     this.subscription = stream.subscribe({
       next: value => {
         const id = this.systems.findIndex(obj => obj.name === value.system);
@@ -58,12 +59,16 @@ export class KafkaComponent implements OnInit {
 
   stopStream() {
     this.subscription.complete();
+    this.system = 'No stream detected!'
+    for (let i = 0; i < this.systems.length; i++) {
+      this.systems[i].state = 'No data';
+    }
   }
 
   systemStatusCheck(): boolean {
 
     for (const system of this.systems) {
-      if(system.state.includes('Error')) {
+      if(system.state.includes('Error') || this.subscription.closed) {
         return false;
       }
     }

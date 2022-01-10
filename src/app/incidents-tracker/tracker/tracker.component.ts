@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+
 // Отрисовать компонент трекера столько раз сколько прошло недель +
 @Component({
   selector: 'app-tracker',
@@ -7,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TrackerComponent implements OnInit {
 
+  public isExpanded: boolean = false;
   public readonly currentYear: number;
   public readonly currentWeek: number;
   public readonly weekArray: number[] = [];
@@ -19,15 +21,15 @@ export class TrackerComponent implements OnInit {
 
   constructor() {
     this.currentYear = new Date().getFullYear();
-    this.yearStart = Date.parse((new Date(this.currentYear, 0, 1)).toString())/1000;
-    this.currentDate = +(Date.now()/1000).toFixed();
+    this.yearStart = Date.parse((new Date(this.currentYear, 0, 1)).toString()) / 1000;
+    this.currentDate = +(Date.now() / 1000).toFixed();
 
-    this.currentWeek = +((this.currentDate - this.yearStart)/(7*24*60*60)).toFixed();
+    this.currentWeek = +((this.currentDate - this.yearStart) / (7 * 24 * 60 * 60)).toFixed();
     this.init();
   }
 
   init() {
-    for (let i = 1; i <= this.currentWeek; i++){
+    for (let i = 1; i <= this.currentWeek; i++) {
       this.weekArray.push(i);
     }
   }

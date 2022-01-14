@@ -8,41 +8,26 @@ import {Observable} from "rxjs";
   styleUrls: ['./kafka.component.css']
 })
 
-export class KafkaComponent implements OnInit {
+export class KafkaComponent {
   system = 'Kafka';
   title = 'Service Status:';
 
   showSystemBtn = true;
-
-  public readonly goodStream$: Observable<any>;
-  public readonly badStream$: Observable<any>;
-  public readonly mixedStream$: Observable<any>;
-
+  public readonly stream$: Observable<any>;
   private subscription: any;
-
-  systems: {name: any, state: any}[] = [];
+  systems: {system: any, state: any, data: any}[] = [];
 
   constructor(agent: AgentService) {
-    this.goodStream$ = agent.goodStream$;
-    this.badStream$ = agent.badStream$;
-    this.mixedStream$ = agent.mixedStream$;
-    this.init(this.goodStream$);
+    this.stream$ = agent.stream$;
+    console.log(this.stream$)
+    this.init(this.stream$);
   }
   init(stream: Observable<any>){
     this.system = 'Kafka'
     this.subscription = stream.subscribe({
-      next: value => {
-        const id = this.systems.findIndex(obj => obj.name === value.system);
-          if(id < 0){
-            this.systems.push({
-              name: value.system,
-              state: value.status
-            });
-          } else {
-            if(this.systems[id].state !== value.status){
-              this.systems[id].state = value.status
-            }
-          }
+      next: (value) => {
+        this.systems = value;
+        console.log(this.systems)
       },
       complete: () => console.log("Stream terminated!")
     })
@@ -52,30 +37,14 @@ export class KafkaComponent implements OnInit {
     this.showSystemBtn = !this.showSystemBtn
   }
 
-  switchStream(stream: Observable<any>) {
-      this.subscription.unsubscribe();
-      this.init(stream);
-  }
-
-  stopStream() {
-    this.subscription.complete();
-    this.system = 'No stream detected!'
-    for (let i = 0; i < this.systems.length; i++) {
-      this.systems[i].state = 'No data';
-    }
-  }
-
   systemStatusCheck(): boolean {
 
     for (const system of this.systems) {
-      if(system.state.includes('Error') || this.subscription.closed) {
+      if(system.state.includes('Error')) {
         return false;
       }
     }
     return true;
-  }
-
-  ngOnInit(): void {
   }
 
 }

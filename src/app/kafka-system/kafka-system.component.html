@@ -4,10 +4,11 @@
     [class.error]="state === 'Error'">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        {{ system.substr(0,1).toUpperCase() + system.substr(1) }}
+        {{system}}
       </mat-panel-title>
       <mat-panel-description>
-        {{ state }}
+        {{ state }},
+        Outgoing messages count: {{data}}
       </mat-panel-description>
     </mat-expansion-panel-header>
   </mat-expansion-panel>

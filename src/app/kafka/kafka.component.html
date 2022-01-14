@@ -15,21 +15,13 @@
 <ng-template #backBtn>
   <app-kafka-system
     *ngFor="let kafkaPart of systems"
-    [system-name]="kafkaPart.name"
-    [state] = "kafkaPart.state"></app-kafka-system>
+    [system-name]="kafkaPart.system"
+    [state] = "kafkaPart.state"
+    [system-data]="kafkaPart.data">
+  </app-kafka-system>
   <div class="d-flex justify-content-center">
     <button type="button" class="btn btn-secondary btn-lg btn-block" (click)="onClick()">Back</button>
   </div>
 </ng-template>
-
-<ng-container>
-  <div class="d-flex justify-content-center">
-    <button id="good" type="button" class="btn btn-secondary btn-sm btn-block" (click)="switchStream(goodStream$)">Good Stream</button>
-    <button id="bad" type="button" class="btn btn-secondary btn-sm btn-block" (click)="switchStream(badStream$)">Bad Stream</button>
-    <button id="mixed" type="button" class="btn btn-secondary btn-sm btn-block" (click)="switchStream(mixedStream$)">Mixed Stream</button>
-    <button id="stop-stream" type="button" class="btn btn-secondary btn-sm btn-block" (click)="stopStream()">Stop Stream</button>
-  </div>
-</ng-container>
-
 
 

@@ -10,6 +10,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {TrackerComponent} from "./incidents-tracker/tracker/tracker.component";
 import {IncidentsTrackerModule} from "./incidents-tracker/incidents-tracker.module";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -22,10 +23,11 @@ import {MatButtonToggleModule} from "@angular/material/button-toggle";
     BrowserAnimationsModule,
     MatExpansionModule,
     IncidentsTrackerModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    HttpClientModule
   ],
   providers: [
-    AgentService
+    AgentService,
   ],
   bootstrap: [AppComponent]
 })

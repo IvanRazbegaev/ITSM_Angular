@@ -5,14 +5,10 @@ import {Component, Input, OnInit} from '@angular/core';
   templateUrl: './kafka-system.component.html',
   styleUrls: ['./kafka-system.component.css']
 })
-export class KafkaSystemComponent implements OnInit {
+export class KafkaSystemComponent {
 
   @Input('system-name') system: string = '';
   @Input('state') state: string = '';
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  @Input('system-data') data: number = 0;
 
 }

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {interval, of, Subject,} from "rxjs";
+import {interval, Observable, of, Subject,} from "rxjs";
 import {switchMap} from "rxjs/operators";
 import {HttpClient} from "@angular/common/http";
 
@@ -28,7 +28,7 @@ export class AgentService {
     return this.kafka.findIndex(obj => obj.system === system)
   }
 
-  producerStatus(http: HttpClient) {
+  producerStatus(http: HttpClient): void {
     const producerStream$ = interval(15000)
       .pipe(switchMap(() => http.get(this.kafkaProducersPromUrl)));
     producerStream$
@@ -44,7 +44,7 @@ export class AgentService {
       });
   }
 
-  kafkaClusterState(http: HttpClient) {
+  kafkaClusterState(http: HttpClient): void {
     const kafkaClusterStream$ = interval(15000)
       .pipe(switchMap(() => http.get(this.kafkaClusterPromUrl)));
     kafkaClusterStream$
@@ -60,7 +60,7 @@ export class AgentService {
       })
   }
 
-  writingDataToArray(messagesCount: number, system: string, limit: number) {
+  writingDataToArray(messagesCount: number, system: string, limit: number): void {
     if (messagesCount < limit) {
       if (this.systemExistInArray(system) < 0) {
         this.kafka.push({
@@ -92,7 +92,7 @@ export class AgentService {
     }
   }
 
-  get stream$() {
+  get stream$():Observable<any> {
     return of(this.kafka)
   }
 }

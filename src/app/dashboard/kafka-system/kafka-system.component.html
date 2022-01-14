@@ -1,0 +1,15 @@
+<ng-container>
+  <mat-expansion-panel
+    [class.ok]="state === 'Ok'"
+    [class.error]="state === 'Error'">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{system}}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ state }},
+        Outgoing messages count: {{data}}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+  </mat-expansion-panel>
+</ng-container>

@@ -1,19 +1,1 @@
-.header {
-  padding: 10px 0px;
-  text-align: center;
-  background: #6C9BCF;
-}
 
-mat-button-toggle-group {
-  width: 100%;
-}
-
-mat-button-toggle{
-  width: 100%;
-  background: #6C9BCF;
-}
-
-.center {
-  text-align: center;
-  margin: 20px auto;
-}

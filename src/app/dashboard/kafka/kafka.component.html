@@ -1,11 +1,12 @@
-<div *ngIf="showSystemBtn == true; then kafkaSystem else backBtn"></div>
+<div *ngIf="showSystemBtn === true; then kafkaSystem else backBtn"></div>
 
 <ng-template #kafkaSystem>
   <div class="d-flex justify-content-center">
-    <button type="button" class="btn btn-lg btn-block"
-            [class.btn-success]="systemStatusCheck()"
-            [class.btn-danger]="!systemStatusCheck()"
-            (click)="onClick()">
+    <button
+      type="button" class="btn btn-lg btn-block"
+      [class.btn-success]="systemStatusCheck()"
+      [class.btn-danger]="!systemStatusCheck()"
+      (click)="onClick()">
       {{ system }}
     </button>
   </div>

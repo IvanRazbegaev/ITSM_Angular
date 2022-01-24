@@ -1,6 +1,6 @@
-import {Component, Input} from '@angular/core';
-import {AgentService} from "../../agent.service";
-import {Observable} from "rxjs";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {AgentService} from "../../services/agent.service";
+import {Observable, Subject, Subscription} from "rxjs";
 
 @Component({
   selector: 'app-kafka',
@@ -9,31 +9,43 @@ import {Observable} from "rxjs";
 })
 
 export class KafkaComponent {
+
+  @Output('kafka-selected') kafkaSelected = new EventEmitter();
+
   system = 'Kafka';
 
-  showSystemBtn = true;
+  showSystemBtn: boolean = true;
   public readonly stream$: Observable<any>;
-  private subscription: any;
+  private subscription: Subscription = new Subscription();
   systems: {system: any, state: any, data: any}[] = [];
 
   constructor(agent: AgentService) {
     this.stream$ = agent.stream$;
-    console.log(this.stream$)
     this.init(this.stream$);
   }
-  init(stream: Observable<any>){
+  init(stream: Observable<any>): void{
     this.system = 'Kafka'
     this.subscription = stream.subscribe({
       next: (value) => {
         this.systems = value;
-        console.log(this.systems)
       },
       complete: () => console.log("Stream terminated!")
     })
   }
 
-  onClick() {
+  onClick(): void {
     this.showSystemBtn = !this.showSystemBtn;
+    if(this.showSystemBtn){
+      this.kafkaSelected.emit({
+        system: 'all',
+        state: this.showSystemBtn
+      });
+    } else {
+      this.kafkaSelected.emit({
+        system: 'kafka',
+        state: this.showSystemBtn
+      });
+    }
   }
 
   systemStatusCheck(): boolean {

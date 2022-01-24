@@ -1,20 +1,5 @@
-<ng-container>
-<mat-button-toggle-group class="header">
-  <mat-button-toggle (click)="pageState = 'dashboard'">Dashboard</mat-button-toggle>
-  <mat-button-toggle (click)="pageState = 'tracker'">Incident Tracker</mat-button-toggle>
-</mat-button-toggle-group>
-</ng-container>
-<ng-container *ngIf="pageState === 'dashboard'">
-  <h2 class="center">{{ title }}</h2>
-  <app-kafka></app-kafka>
-  <app-netto-processing></app-netto-processing>
-  <div class="d-flex justify-content-center">
-    <button
-      *ngIf="subsystemState !== 'all'"
-      type="button" class="btn btn-secondary btn-lg btn-block"
-      (click)="onClick('all')">Back</button>
-  </div>
-</ng-container>
-<app-tracker *ngIf="pageState === 'tracker'"></app-tracker>
+<app-navbar></app-navbar>
+<router-outlet></router-outlet>
+
 
 

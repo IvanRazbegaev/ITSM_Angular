@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {AgentService} from "../../services/agent.service";
 
 @Component({
   selector: 'app-netto-processing',
@@ -7,13 +8,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NettoProcessingComponent {
 
+  @Output('netto-selected') nettoSelected = new EventEmitter()
+
   system: string = 'Netto processing time';
   showSystemBtn: boolean = true;
 
-  constructor() { }
-
-  onClick() {
-    this.showSystemBtn = !this.showSystemBtn
+  constructor() {
   }
 
+  onClick() {
+    this.showSystemBtn = !this.showSystemBtn;
+    if (this.showSystemBtn) {
+      this.nettoSelected.emit({
+        system: 'all',
+        state: this.showSystemBtn
+      });
+    } else {
+        this.nettoSelected.emit({
+          system: 'netto-processing',
+          state: this.showSystemBtn
+        });
+    }
+  }
 }

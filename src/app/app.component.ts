@@ -1,4 +1,4 @@
-import {Component, Output} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-root',
@@ -7,11 +7,4 @@ import {Component, Output} from '@angular/core';
 })
 export class AppComponent {
 
-  title = 'Service Status:';
-  pageState = 'dashboard';
-  subsystemState: string = 'all'
-
-  onClick(state: string): void {
-    this.subsystemState = state;
-  }
 }

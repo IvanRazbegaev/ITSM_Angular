@@ -17,6 +17,13 @@ import {RouterModule} from "@angular/router";
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import {PipeModule} from "./pipes/pipe.module";
+import {HaModule} from "./ha/ha.module";
+import {MatNativeDateModule} from "@angular/material/core";
+import {HaComponent} from "./ha/ha/ha.component";
+import {HaDashboardComponent} from "./ha/ha-dashboard/ha-dashboard.component";
+import {HaOverallDashboardComponent} from "./ha/ha-overall-dashboard/ha-overall-dashboard.component";
+
 
 @NgModule({
   declarations: [
@@ -27,37 +34,55 @@ import { NotFoundComponent } from './not-found/not-found.component';
     NavbarComponent,
     DashboardComponent,
     HomeComponent,
-    NotFoundComponent,
+    NotFoundComponent
   ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        MatExpansionModule,
-        IncidentsTrackerModule,
-        MatButtonToggleModule,
-        HttpClientModule,
-        RouterModule.forRoot([
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    MatExpansionModule,
+    IncidentsTrackerModule,
+    MatButtonToggleModule,
+    MatNativeDateModule,
+    HttpClientModule,
+    PipeModule,
+    RouterModule.forRoot([
+      {
+        path: '',
+        component: HomeComponent
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent
+      },
+      {
+        path: 'incident-tracker',
+        component: TrackerComponent
+      },
+      {
+        path: 'ha-dashboard',
+        component: HaComponent,
+        children:[
           {
-            path: '',
-            component: HomeComponent
+            path: 'month',
+            component: HaDashboardComponent,
           },
           {
-            path: 'dashboard',
-            component: DashboardComponent
+            path: 'overall',
+            component: HaOverallDashboardComponent,
           },
-          {
-            path: 'incident-tracker',
-            component: TrackerComponent
-          },
-          {
-            path: '**',
-            component: NotFoundComponent
-          }
-        ])
-    ],
+        ]
+      },
+      {
+        path: '**',
+        component: NotFoundComponent
+      }
+    ]),
+    HaModule,
+  ],
   providers: [
     AgentService,
   ],
+  exports: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

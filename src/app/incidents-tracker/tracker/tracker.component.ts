@@ -1,45 +1,59 @@
 import {Component, OnInit} from '@angular/core';
 import {TrackerBackendService} from "../../services/tracker-backend.service";
+import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
 
-// Отрисовать компонент трекера столько раз сколько прошло недель +
 @Component({
   selector: 'app-tracker',
   templateUrl: './tracker.component.html',
   styleUrls: ['./tracker.component.css']
 })
 export class TrackerComponent implements OnInit {
+  datePicker: FormGroup;
+  resultArray: any[] = [];
 
   public isExpanded: boolean = false;
-  public currentYear: number = 0;
-  public currentWeek: number = 0;
-  public readonly weekArray: number[] = [];
-  private currentDate: number = 0;
-  private yearStart: number = 0;
-  private readonly weekStart = { //"Начало" инцидентной недели
-    day: 1,
-    hour: 18
-  }
+  public parsedIncidentsArray: any[] = [];
 
   constructor(private response: TrackerBackendService) {
+    const today = new Date();
+    const month = today.getMonth();
+    const year = today.getFullYear();
+    const day = today.getDate()
 
+    this.datePicker = new FormGroup({
+      start: new FormControl(new Date(year, month, day - 7)),
+      end: new FormControl(new Date(year, month, day)),
+    });
   }
 
   init() {
-    for (let i = 1; i <= this.currentWeek; i++) {
-      this.weekArray.push(i);
+    this.parsedIncidentsArray = [];
+    const requestBody = this.getPickedDate();
+    if(requestBody.start !== null && requestBody.end !== null){
+      this.response.getAllIncidents(requestBody.start, requestBody.end)
+        .subscribe(value => {
+          this.resultArray = value;
+        })
     }
-
-    this.response.getAllIncidents()
-      .subscribe(value => console.log(value))
   }
 
-
   ngOnInit(): void {
-    this.currentYear = new Date().getFullYear();
-    this.yearStart = Date.parse((new Date(this.currentYear, 0, 1)).toString()) / 1000;
-    this.currentDate = +(Date.now() / 1000).toFixed();
-    this.currentWeek = +((this.currentDate - this.yearStart) / (7 * 24 * 60 * 60)).toFixed();
-    this.init();
+    this.init()
+  }
+
+  getPickedDate(): {start: number, end: number} {
+    return {
+      start: this.datePicker.get('start')?.value,
+      end: this.datePicker.get('end')?.value
+    }
+  }
+
+  checkForIncidents(): void {
+    this.response.checkForIncidents()
+      .subscribe(value => {
+        this.init();
+      })
+
   }
 
 }

@@ -1,5 +1,4 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {TrackerComponent} from "../tracker/tracker.component";
 
 @Component({
   selector: 'app-incident-week',
@@ -8,14 +7,22 @@ import {TrackerComponent} from "../tracker/tracker.component";
 })
 export class IncidentWeekComponent implements OnInit {
 
-  @Input('week') week:number = 0;
-  currentWeek: number;
+  @Input('week') week: number = 0;
+  @Input('currentWeek') currentWeek: number = 0;
+  @Input('data') incidents: any[] = []
 
-  constructor(private readonly activeWeek: TrackerComponent) {
-    this.currentWeek = activeWeek.currentWeek
+
+  displayedColumns: string[] = ['ID', 'Incident Started', 'Incident Ended', "Incident's Length", 'Description', 'Comments'];
+
+  constructor() {
   }
 
   ngOnInit(): void {
+
+  }
+
+  onClick() {
+    console.log(this.incidents)
   }
 
 }

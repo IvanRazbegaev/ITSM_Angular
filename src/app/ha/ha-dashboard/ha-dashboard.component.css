@@ -1,0 +1,25 @@
+mat-form-field {
+  padding: 20px;
+  width: 45%;
+}
+
+mat-button-toggle {
+  margin: 12px;
+}
+
+tr.mat-footer-row {
+  font-weight: bold;
+}
+
+table {
+  width: 100%;
+  text-align: center;
+}
+th.mat-header-cell {
+  text-align: center;
+}
+
+div {
+  padding: 12px;
+  width: 100%;
+}

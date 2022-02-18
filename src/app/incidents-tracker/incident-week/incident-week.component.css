@@ -2,6 +2,17 @@
   background-color: #6ECF6C;
 }
 
-.inactive-week {
-  background-color: #8397AD;
+table {
+  width: 100%;
+  text-align: center;
+}
+th.mat-header-cell {
+  text-align: center;
+}
+
+.mat-column-ID {
+  width: 20px;
+  border-right: 1px solid currentColor;
+  padding-right: 24px;
+  text-align: center;
 }

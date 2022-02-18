@@ -1,16 +1,18 @@
+
 <ng-container>
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        Issues for year {{ currentYear }},
-        current incident week:
-        <a href="#"
-        >{{currentWeek}}</a>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <app-incident-week class="inactive-week"
-      *ngFor="let week of weekArray"
-      [week]="week"
-    ></app-incident-week>
-  </mat-expansion-panel>
+  <mat-form-field class="example-form-field" appearance="fill">
+    <mat-label>Select range for display</mat-label>
+    <mat-date-range-input
+      [formGroup]="datePicker"
+      [rangePicker]="campaignOnePicker">
+      <input matStartDate placeholder="Start date" formControlName="start">
+      <input matEndDate placeholder="End date" formControlName="end" (dateChange)="init()">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="campaignOnePicker"></mat-datepicker-toggle>
+    <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
+  </mat-form-field>
+</ng-container>
+<button class="btn btn-primary" (click)="checkForIncidents()">Search for Incidents</button>
+<ng-container>
+    <app-incident-week class="inactive-week" [data]="resultArray"></app-incident-week>
 </ng-container>

@@ -19,10 +19,13 @@ import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import {PipeModule} from "./pipes/pipe.module";
 import {HaModule} from "./ha/ha.module";
-import {MatNativeDateModule} from "@angular/material/core";
+import {MAT_DATE_LOCALE, MatNativeDateModule} from "@angular/material/core";
 import {HaComponent} from "./ha/ha/ha.component";
 import {HaDashboardComponent} from "./ha/ha-dashboard/ha-dashboard.component";
 import {HaOverallDashboardComponent} from "./ha/ha-overall-dashboard/ha-overall-dashboard.component";
+import { MatFormFieldModule } from '@angular/material/form-field';
+import {MatInputModule} from "@angular/material/input";
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -81,8 +84,9 @@ import {HaOverallDashboardComponent} from "./ha/ha-overall-dashboard/ha-overall-
   ],
   providers: [
     AgentService,
+    {provide: MAT_DATE_LOCALE, useValue: 'ru-RU'}
   ],
   exports: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule { }

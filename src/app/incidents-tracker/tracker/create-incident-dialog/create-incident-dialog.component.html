@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>Add New Incident</h2>
+<form [formGroup]="form">
+  <mat-dialog-content class="mat-typography">
+    <ng-container>
+      <mat-form-field class="dialog-date-picker" appearance="fill" >
+        <input matInput [ngxMatDatetimePicker]="startPicker" placeholder="Incident start time"
+               formControlName="timeFrom">
+        <mat-datepicker-toggle matSuffix [for]="$any(startPicker)"></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #startPicker></ngx-mat-datetime-picker>
+      </mat-form-field>
+    </ng-container>
+    <ng-container>
+      <mat-form-field  class="dialog-date-picker" appearance="fill" >
+        <input matInput [ngxMatDatetimePicker]="endPicker" placeholder="Incident end time"
+               formControlName="timeTo">
+        <mat-datepicker-toggle matSuffix [for]="$any(endPicker)"></mat-datepicker-toggle>
+        <ngx-mat-datetime-picker #endPicker></ngx-mat-datetime-picker>
+      </mat-form-field>
+    </ng-container>
+
+    <section class="example-section">
+      <mat-checkbox class="example-margin" formControlName="firstNode">First node</mat-checkbox>
+    </section>
+    <section class="example-section">
+      <mat-checkbox class="example-margin" formControlName="secondNode">Second node</mat-checkbox>
+    </section>
+    <section class="example-section">
+      <mat-checkbox class="example-margin" formControlName="thirdNode">Third node</mat-checkbox>
+    </section>
+
+    <mat-form-field class="dialog-short-description" appearance="fill">
+      <mat-label>Short description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
+    <mat-form-field class="dialog-comments" appearance="fill">
+      <mat-label>Comments</mat-label>
+      <textarea matInput formControlName="comments"></textarea>
+    </mat-form-field>
+    <mat-dialog-actions align="end">
+      <button mat-button class="btn btn-primary" mat-dialog-close>Cancel</button>
+      <button mat-button class="btn btn-primary" [mat-dialog-close]="getFormValues()" cdkFocusInitial>Add Incident</button>
+    </mat-dialog-actions>
+  </mat-dialog-content>
+</form>
+

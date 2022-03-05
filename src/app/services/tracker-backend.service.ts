@@ -14,8 +14,8 @@ export class TrackerBackendService {
     return this.http.get(`http://localhost:8000/tracker?start=${start}&end=${end}`)
   }
 
-  createIncident(body: IncidentRequest) :Observable<any>{
-    return this.http.post("http://localhost:8000/tracker", body)
+  createNewIncident(incidentStart: string, incidentEnd: string, incLength: number, desc:string, comments: string): Observable<any>{
+    return this.http.post('http://localhost:8000/tracker', {incidentStart, incidentEnd, incLength, desc, comments})
   }
 
   deleteAllIncidents() :Observable<any>{
@@ -24,5 +24,9 @@ export class TrackerBackendService {
 
   checkForIncidents(): Observable<any>{
     return this.http.get(`http://localhost:8000/incidents`)
+  }
+
+  deleteIncident(id: number){
+    return this.http.delete(`http://localhost:8000/tracker?id=${id}`)
   }
 }

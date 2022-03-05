@@ -16,16 +16,25 @@
   </mat-select>
 </mat-form-field>
 
-<mat-button-toggle (click)="onCheckButtonClick()">HA check!</mat-button-toggle>
+<mat-button-toggle (click)="onCheckButtonClick()">Show HA report</mat-button-toggle>
+<mat-button-toggle (click)="calculateHaForMonth()">Calculate HA for selected month</mat-button-toggle>
 
-<ng-container *ngIf="result.length > 0">
-  <table mat-table [dataSource]="result" class="mat-elevation-z8">
+<mat-spinner *ngIf="dataReceivingInProgress"></mat-spinner>
+
+<ng-container *ngIf="result06.length > 0 || result10.length > 0">
+
+  <div class="inner">HA calculation for 0.6 second</div>
+
+  <table mat-table [dataSource]="result06" class="mat-elevation-z8">
 
     <!-- Downtime's Start Column -->
     <ng-container matColumnDef="Downtime's Start">
       <th mat-header-cell *matHeaderCellDef>Downtime's Start</th>
-      <td mat-cell *matCellDef="let downtime"> {{downtime.downtimeStart | incident:"incTime": "yes"}} </td>
+      <td mat-cell *matCellDef="let downtime">
+        {{downtime.downtimeStart | incident:"incTime": "yes"}}
+      </td>
       <td mat-footer-cell *matFooterCellDef>Uptime for {{selectedMonth}}:</td>
+
     </ng-container>
 
     <!-- Downtime's End Column -->
@@ -39,14 +48,22 @@
     <ng-container matColumnDef="Downtime's Length">
       <th mat-header-cell *matHeaderCellDef>Downtime's Length (in minutes)</th>
       <td mat-cell *matCellDef="let downtime"> {{downtime.downtimeLength}} </td>
-      <td mat-footer-cell *matFooterCellDef> {{ha}}</td>
-    </ng-container>
+      <td mat-footer-cell *matFooterCellDef>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ha06.allNodesHa}}
+            </mat-panel-title>
+            <mat-panel-description>
+              click to see the distribution by node
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>First node uptime: {{ha06.firstNodeHa}}</p>
+          <p>Second node uptime: {{ha06.secondNodeHa}}</p>
+          <p>Third node uptime: {{ha06.thirdNodeHa}}</p>
+        </mat-expansion-panel>
+      </td>
 
-    <!-- Limit Column -->
-    <ng-container matColumnDef="Downtime's Limit">
-      <th mat-header-cell *matHeaderCellDef>Downtime's Limit</th>
-      <td mat-cell *matCellDef="let downtime"> {{downtime.highLimit}} </td>
-      <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
 
     <!-- Classification Column -->
@@ -59,7 +76,132 @@
     <!-- Comments Column -->
     <ng-container matColumnDef="Comments">
       <th mat-header-cell *matHeaderCellDef>Comments</th>
-      <td mat-cell *matCellDef="let downtime"> {{downtime.comments}} </td>
+      <td mat-cell *matCellDef="let downtime"> {{downtime.host | incident : "node"}} </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Incident Ref ID Column -->
+    <ng-container matColumnDef="Incident Ref ID">
+      <th mat-header-cell *matHeaderCellDef>Incident Reference ID</th>
+      <td mat-cell *matCellDef="let downtime"> {{downtime.incidentRef | incident: "incRefId"}}</td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Menu Column   -->
+
+    <ng-container matColumnDef="Menu">
+      <th mat-header-cell *matHeaderCellDef>Menu</th>
+      <td mat-cell *matCellDef="let downtime">
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="deleteDowntime(downtime)">
+            <span>Delete</span>
+          </button>
+          <button mat-menu-item (click)="openDashboard(downtime)">
+            <span>Show on the Dashboard</span>
+          </button>
+          <button mat-menu-item (click)="logDowntime(downtime)">
+            <span>Log data</span>
+          </button>
+        </mat-menu>
+      </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+
+  </table>
+
+  <div class="inner">HA calculation for 1 second</div>
+
+  <table mat-table [dataSource]="result10" class="mat-elevation-z8">
+
+    <!-- Downtime's Start Column -->
+    <ng-container matColumnDef="Downtime's Start">
+      <th mat-header-cell *matHeaderCellDef>Downtime's Start</th>
+      <td mat-cell *matCellDef="let downtime"> {{downtime.downtimeStart | incident:"incTime": "yes"}} </td>
+      <td mat-footer-cell *matFooterCellDef>Uptime for {{selectedMonth}}:</td>
+
+    </ng-container>
+
+    <!-- Downtime's End Column -->
+    <ng-container matColumnDef="Downtime's End">
+      <th mat-header-cell *matHeaderCellDef>Downtime's End</th>
+      <td mat-cell *matCellDef="let downtime"> {{downtime.downtimeEnd | incident:"incTime":"no"}} </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Downtime's Length Column -->
+    <ng-container matColumnDef="Downtime's Length">
+      <th mat-header-cell *matHeaderCellDef>Downtime's Length (in minutes)</th>
+      <td mat-cell *matCellDef="let downtime"> {{downtime.downtimeLength}} </td>
+      <td mat-footer-cell *matFooterCellDef>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              {{ha10.allNodesHa}}
+            </mat-panel-title>
+            <mat-panel-description>
+              click to see the distribution by node
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>First node uptime: {{ha10.firstNodeHa}}</p>
+          <p>Second node uptime: {{ha10.secondNodeHa}}</p>
+          <p>Third node uptime: {{ha10.thirdNodeHa}}</p>
+        </mat-expansion-panel>
+      </td>
+
+    </ng-container>
+
+
+    <!-- Classification Column -->
+    <ng-container matColumnDef="Classification">
+      <th mat-header-cell *matHeaderCellDef>Classification</th>
+      <td mat-cell *matCellDef="let downtime"> {{downtime.classification}} </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Comments Column -->
+    <ng-container matColumnDef="Comments">
+      <th mat-header-cell *matHeaderCellDef>Comments</th>
+      <td mat-cell *matCellDef="let downtime"> {{downtime.host | incident : "node"}} </td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Incident Ref ID Column -->
+    <ng-container matColumnDef="Incident Ref ID">
+      <th mat-header-cell *matHeaderCellDef>Incident Reference ID</th>
+      <td mat-cell *matCellDef="let downtime"> {{downtime.incidentRef | incident: "incRefId"}}</td>
+      <td mat-footer-cell *matFooterCellDef></td>
+    </ng-container>
+
+    <!-- Menu Column   -->
+
+    <ng-container matColumnDef="Menu">
+      <th mat-header-cell *matHeaderCellDef>Menu</th>
+      <td mat-cell *matCellDef="let downtime">
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #menu="matMenu">
+          <button mat-menu-item (click)="deleteDowntime(downtime)">
+            <span>Delete</span>
+          </button>
+          <button mat-menu-item (click)="openDashboard(downtime)">
+            <span>Show on the Dashboard</span>
+          </button>
+          <button mat-menu-item (click)="logDowntime(downtime)">
+            <span>Log data</span>
+          </button>
+        </mat-menu>
+      </td>
       <td mat-footer-cell *matFooterCellDef></td>
     </ng-container>
 
@@ -70,7 +212,7 @@
   </table>
 </ng-container>
 
-<ng-container *ngIf="result.length === 0">
+<ng-container *ngIf="result06.length === 0 && result10.length === 0">
   <div>
     No data to display!~~
   </div>

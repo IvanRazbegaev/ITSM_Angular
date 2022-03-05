@@ -12,7 +12,105 @@
     <mat-date-range-picker #campaignOnePicker></mat-date-range-picker>
   </mat-form-field>
 </ng-container>
-<button class="btn btn-primary" (click)="checkForIncidents()">Search for Incidents</button>
+<button class="btn service btn-secondary" (click)="checkForIncidents()">Search for Incidents</button>
+<button class="btn btn-secondary" (click)="openDialog()">Create incident</button>
+
 <ng-container>
-    <app-incident-week class="inactive-week" [data]="resultArray"></app-incident-week>
+  <mat-drawer-container class="example-container" autosize>
+
+    <!--  Сюда запихиваем все полученные данные по инциденту-->
+    <mat-drawer #drawer class="example-sidenav" mode="over">
+      <p>Huge list of instruments here</p>
+      <p>incident ID: {{incidentParams.id}},</p>
+      <p>Incident start time: {{incidentParams.start_date | incident:"incTime": "yes"}},</p>
+      <p>Incident end time: {{incidentParams.end_date | incident:"incTime": "no"}},</p>
+      <p>Incident's length: {{incidentParams.incident_length | incident: "incLength"}} minutes</p>
+      <p>Short description: {{incidentParams.short_description | incident: "shortDesc"}}</p>
+      <button mat-button class="btn btn-primary" [matMenuTriggerFor]="dashboards">Dashboards</button>
+      <mat-menu #dashboards="matMenu">
+        <button mat-menu-item [matMenuTriggerFor]="graphana">Graphana Dashboards</button>
+        <button mat-menu-item [matMenuTriggerFor]="pmm">PMM2 Dashboards</button>
+      </mat-menu>
+
+      <mat-menu #graphana="matMenu">
+        <button mat-menu-item>Business Operations</button>
+        <button mat-menu-item>Top 50 Clients</button>
+      </mat-menu>
+
+      <mat-menu #pmm="matMenu">
+        <button mat-menu-item>SQL Instance Summary</button>
+        <button mat-menu-item>PXC/Galera Cluster Summary</button>
+        <button mat-menu-item>ProxySQL Summary</button>
+        <button mat-menu-item>Node Summary</button>
+        <button mat-menu-item>Disk Details</button>
+        <button mat-menu-item>Query Analytics</button>
+      </mat-menu>
+
+      <button class="btn btn-primary" (click)="deleteIncident(); drawer.toggle();">Delete current incident</button>
+      <button class="btn btn-primary" (click)="logParams()">Log current params</button>
+    </mat-drawer>
+
+    <ng-container>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <!-- ID Column -->
+        <ng-container matColumnDef="ID">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let incident"> {{incident.id | incident:"id"}} </td>
+        </ng-container>
+
+        <!-- Incident Started Column -->
+        <ng-container matColumnDef="Incident Started">
+          <th mat-header-cell *matHeaderCellDef>Incident Started</th>
+          <td mat-cell *matCellDef="let incident"> {{incident.start_date | incident:"incTime": "yes"}} </td>
+        </ng-container>
+
+        <!-- Incident Ended Column -->
+        <ng-container matColumnDef="Incident Ended">
+          <th mat-header-cell *matHeaderCellDef>Incident Ended</th>
+          <td mat-cell *matCellDef="let incident"> {{incident.end_date | incident:"incTime":"no"}} </td>
+        </ng-container>
+
+        <!-- Incident's Length Column -->
+        <ng-container matColumnDef="Incident's Length">
+          <th mat-header-cell *matHeaderCellDef>Incident's Length (in minutes)</th>
+          <td mat-cell *matCellDef="let incident"> {{incident.incident_length | incident: "incLength"}} </td>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="Description">
+          <th mat-header-cell *matHeaderCellDef>Description</th>
+          <td mat-cell *matCellDef="let incident"> {{incident.short_description | incident: "shortDesc"}} </td>
+        </ng-container>
+
+        <!-- Comments Column -->
+        <ng-container matColumnDef="Comments">
+          <th mat-header-cell *matHeaderCellDef> Comments</th>
+          <td mat-cell *matCellDef="let incident"> {{incident.comments}} </td>
+        </ng-container>
+
+        <!-- Tools Column -->
+        <ng-container matColumnDef="Tools">
+          <th mat-header-cell *matHeaderCellDef> Tools</th>
+          <td mat-cell *matCellDef="let incident">
+            <div class="example-sidenav-content">
+              <button type="button" mat-button class="btn btn-success" (click)="drawer.toggle(); incidentParams = incident">
+                Tool bar
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 15]"
+                     showFirstLastButtons
+                     aria-label="Select page">
+      </mat-paginator>
+    </ng-container>
+  </mat-drawer-container>
+
 </ng-container>
+

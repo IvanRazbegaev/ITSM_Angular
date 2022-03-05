@@ -1,3 +1,47 @@
 .example-form-field {
   margin: 0 8px 16px 0;
 }
+
+.btn.btn-secondary {
+  margin: 10px;
+}
+
+.active-week {
+  background-color: #6ECF6C;
+}
+
+table {
+  width: 100%;
+  text-align: center;
+}
+th.mat-header-cell {
+  text-align: center;
+}
+
+.mat-column-ID {
+  width: 20px;
+  border-right: 1px solid currentColor;
+  padding-right: 24px;
+  text-align: center;
+}
+
+p {
+  padding: 10px;
+  text-align: center;
+}
+
+mat-drawer {
+  width: 300px;
+}
+
+div {
+  padding: 10px;
+  text-align: left;
+}
+
+.btn.btn-primary {
+  width: 50%;
+  margin: 30px auto;
+  display: flex;
+  justify-content: center;
+}

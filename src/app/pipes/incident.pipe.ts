@@ -14,10 +14,20 @@ export class IncidentPipe implements PipeTransform {
       return this.convertToLocalDateTime(value, incStart)
     } else if (column === "incLength"){
       return `${value + 2}`
+    } else if (column === "incRefId"){
+      if(value){
+        return value;
+      } else {
+        return `No matches with incidents found`
+      }
+
     } else if(column === 'shortDesc'){
 
       let nodes: number[] = []
       let responseTime: string = '';
+      if(value === null || value === undefined){
+        return '';
+      }
       const array = value.split(',')
 
       for (const element of array){
@@ -38,19 +48,30 @@ export class IncidentPipe implements PipeTransform {
       } else if (nodes.length > 1){
         return `Затронуты ноды ${nodes.sort()}. Самый большой выброс составил ${responseTime} ms`
       }
-    } else {
+    } else if(column === 'node'){
+      if(value === 'apiprod.fundist.org'){
+        return '1ая нода'
+      } else if(value === 'apiprod2.fundist.org'){
+        return '2ая нода'
+      } else if(value === 'apiprod3.fundist.org'){
+        return '3яя нода'
+      }
+        } else {
       return value
     }
   }
 
   convertToLocalDateTime(str: string, incStart:string | undefined): string {
     let date, time;
+    const timezoneOffset = Math.abs(new Date().getTimezoneOffset()) * 60 * 1000;
     if(incStart === "yes"){
-      date = new Date(Date.parse(str)).toLocaleDateString();
-      time = new Date(Date.parse(str) - 1 * 60 * 1000 ).toLocaleTimeString();
+      const dateWithTimeOffset = Date.parse(str) + timezoneOffset
+      date = new Date(dateWithTimeOffset).toLocaleDateString();
+      time = new Date(dateWithTimeOffset - 1 * 60 * 1000 ).toLocaleTimeString();
     } else if ("no"){
-      date = new Date(Date.parse(str)).toLocaleDateString();
-      time = new Date(Date.parse(str) + 1 * 60 * 1000 ).toLocaleTimeString();
+      const dateWithTimeOffset = Date.parse(str) + timezoneOffset
+      date = new Date(dateWithTimeOffset).toLocaleDateString();
+      time = new Date(dateWithTimeOffset + 1 * 60 * 1000 ).toLocaleTimeString();
     } else {
       throw new Error("Недопустимое значение для параметра incStart")
     }

@@ -1,4 +1,27 @@
-<mat-button-toggle (click)="init()">For testing purposes!</mat-button-toggle>
 
-
+<mat-expansion-panel *ngFor="let year of yearArray">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      {{year}}
+    </mat-panel-title>
+    <mat-panel-description></mat-panel-description>
+  </mat-expansion-panel-header>
+  <mat-expansion-panel *ngFor="let month of monthArray">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{month | haDasboard}}
+      </mat-panel-title>
+      <mat-panel-description>
+        <p>High Availability for limit 0.6: All nodes - {{haCalculation(filterResultByDate(result06, month, year), month, year).allNodesHa}}</p>
+        <p>High Availability for limit 1.0: All nodes - {{haCalculation(filterResultByDate(result10, month, year), month, year).allNodesHa}}</p>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>First node HA for limit 0.6: {{haCalculation(filterResultByDate(result06, month, year), month, year).firstNodeHa}}</p>
+    <p>First node HA for limit 1.0: {{haCalculation(filterResultByDate(result10, month, year), month, year).firstNodeHa}}</p>
+    <p>Second node HA for limit 0.6: {{haCalculation(filterResultByDate(result06, month, year), month, year).secondNodeHa}}</p>
+    <p>Second node HA for limit 1.0: {{haCalculation(filterResultByDate(result10, month, year), month, year).secondNodeHa}}</p>
+    <p>Third node HA for limit 0.6: {{haCalculation(filterResultByDate(result06, month, year), month, year).thirdNodeHa}}</p>
+    <p>Third node HA for limit 1.0: {{haCalculation(filterResultByDate(result10, month, year), month, year).thirdNodeHa}}</p>
+  </mat-expansion-panel>
+</mat-expansion-panel>
 

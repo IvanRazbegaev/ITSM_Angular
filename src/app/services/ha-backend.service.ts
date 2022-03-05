@@ -16,8 +16,12 @@ export class HaBackendService {
     return this.http.get(`http://localhost:8000/ha`)
   }
 
-  checkSystemForDowntimes(month: number, year: number, highLimit: number): Observable<any>{
+  checkSystemForDowntimes(month: number, year: number, highLimit?: number): Observable<any>{
     return this.http.post(`http://localhost:8000/ha`, {month, year, limit: highLimit})
+  }
+
+  deleteDowntime(id: number): Observable<any>{
+    return this.http.delete(`http://localhost:8000/ha?id=${id}`)
   }
 
 }
